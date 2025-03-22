@@ -1,0 +1,44 @@
+services:
+  app1:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - nginx
+      - redis
+    networks:
+      - net-balance
+    hostname: app1
+  app2:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - nginx
+      - redis
+    networks:
+      - net-balance
+    hostname: app2
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf 
+    networks:
+      - net-balance
+  redis:
+    image: redis:latest
+    volumes:
+      - redis-data:/data
+    networks:
+      - net-balance
+    ports:
+      - "6379:6379"
+
+volumes:
+  redis-data:
+
+networks:
+  net-balance:
+    driver: bridge
